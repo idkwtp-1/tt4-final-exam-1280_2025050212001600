@@ -6,8 +6,8 @@ import ExpenseForm from "./pages/ExpenseForm";
 function App() {
   return (
     <Router>
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Expense Tracker</h1>
+      <div className="container mt-4">
+        <h1 className="text-center mb-4">Expense Tracker</h1>
         <Routes>
           <Route path="/" element={<ExpenseList />} />
           <Route path="/add" element={<ExpenseForm />} />
