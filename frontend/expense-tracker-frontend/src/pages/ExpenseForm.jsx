@@ -36,13 +36,22 @@ const ExpenseForm = ({ onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
-      <input name="amount" type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={handleChange} required />
-      <input name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
-      <input name="date" type="date" value={form.date} onChange={handleChange} required />
-      <button type="submit">Add Expense</button>
-    </form>
+    <form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
+  <div className="mb-3">
+    <input className="form-control" name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+  </div>
+  <div className="mb-3">
+    <input className="form-control" name="amount" type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={handleChange} required />
+  </div>
+  <div className="mb-3">
+    <input className="form-control" name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
+  </div>
+  <div className="mb-3">
+    <input className="form-control" name="date" type="date" value={form.date} onChange={handleChange} required />
+  </div>
+  <button type="submit" className="btn btn-primary">Add Expense</button>
+</form>
+
   );
 };
 
