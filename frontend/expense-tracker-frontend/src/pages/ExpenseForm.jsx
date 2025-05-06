@@ -1,94 +1,49 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-function ExpenseForm() {
+const ExpenseForm = ({ onSuccess }) => {
   const [form, setForm] = useState({
-    description: "",
-    amount: "",
-    date: "",
-    category: "",
+    description: '',
+    amount: '',
+    category: '',
+    date: '',
   });
 
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  useEffect(() => {
-    if (id) {
-      axios.get(`/api/expenses/${id}`).then((res) => {
-        setForm(res.data);
-      });
-    }
-  }, [id]);
-
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (id) {
-      await axios.put(`/api/expenses/${id}`, form);
-    } else {
-      await axios.post("/api/expenses", form);
+    try {
+      const payload = {
+        description: form.description,
+        amount: parseFloat(form.amount),
+        category: form.category,
+        date: new Date(form.date).toISOString(),
+      };
+
+      const API_BASE = process.env.REACT_APP_API_URL || '';
+      console.log('Sending:', payload);
+      await axios.post(`${API_BASE}/api/expenses`, payload);
+
+      if (onSuccess) onSuccess();
+      setForm({ description: '', amount: '', category: '', date: '' });
+    } catch (error) {
+      console.error('❌ Submission failed:', error);
     }
-    navigate("/");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="row g-3">
-      <div className="col-md-6">
-        <label className="form-label">Description</label>
-        <input
-          className="form-control"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="col-md-6">
-        <label className="form-label">Amount</label>
-        <input
-          type="number"
-          className="form-control"
-          name="amount"
-          value={form.amount}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="col-md-6">
-        <label className="form-label">Date</label>
-        <input
-          type="date"
-          className="form-control"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="col-md-6">
-        <label className="form-label">Category</label>
-        <input
-          className="form-control"
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="col-12">
-        <button type="submit" className="btn btn-success">
-          {id ? "Update" : "Add"} Expense
-        </button>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+      <input name="amount" type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={handleChange} required />
+      <input name="category" placeholder="Category" value={form.category} onChange={handleChange} required />
+      <input name="date" type="date" value={form.date} onChange={handleChange} required />
+      <button type="submit">Add Expense</button>
     </form>
   );
-}
+};
 
 export default ExpenseForm;
