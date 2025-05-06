@@ -40,16 +40,15 @@ public class ExpensesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] Expense expense)
-    {
-        if (id != expense.ID)
-            return BadRequest();
+    [HttpPut("{id}")]
+public async Task<IActionResult> Put(int id, Expense expense)
+{
+    if (id != expense.ID) return BadRequest();
+    _context.Entry(expense).State = EntityState.Modified;
+    await _context.SaveChangesAsync();
+    return NoContent();
+}
 
-        _context.Entry(expense).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
